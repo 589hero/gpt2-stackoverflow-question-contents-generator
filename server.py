@@ -33,50 +33,34 @@ class TextGenerationOutput(BaseModel):
     output_3: str
 
 
-def postprocessing(text):
+def clean_enter(text):
     text = re.sub('\n{2,}', '\n', text)
 
     return text
 
 
-def generate_question_contents(input_ids, min_length, max_length=100, num_return_sequences=1):
-    try:
-        # model generating
-        sample_outputs = model.generate(input_ids,
-                                        do_sample=True,
-                                        min_length=min_length,
-                                        max_length=max_length,
-                                        no_repeat_ngram_size=2,
-                                        num_beams=5,
-                                        top_k=40,
-                                        top_p=0.95,  # 누적 확률이 95%인 후보집합에서만 생성
-                                        num_return_sequences=num_return_sequences)
-
-        result = dict()
-
-        for idx, sample_output in enumerate(sample_outputs):
-            question_body = tokenizer.decode(sample_output, skip_special_tokens=True)
-
-            result[idx] = question_body
-
-        return result
-
-    except Exception as e:
-        print(f'Error occur : {e}')
-        return {'error': e}
-
-
-def get_question_contents(input: TextGenerationInput) -> TextGenerationOutput:
+def generate_question_contents(input: TextGenerationInput) -> TextGenerationOutput:
     """Generate question body based on a given question title."""
     query = f'Title: {input.question_title}, Body: ' # question_title
     input_ids = tokenizer.encode(query)
     min_length = len(input_ids.tolist()[0])
     max_length = input.length + min_length
 
-    results = generate_question_contents(input_ids, min_length, max_length, num_return_sequences=3)
+    # model generating
+    sample_outputs = model.generate(input_ids,
+                                    do_sample=True,
+                                    min_length=min_length,
+                                    max_length=max_length,
+                                    no_repeat_ngram_size=2,
+                                    num_beams=5,
+                                    top_k=40,
+                                    top_p=0.95,
+                                    num_return_sequences=3)
 
-    text = dict()
-    for idx, result in enumerate(results):
-        text[idx] = postprocessing(tokenizer.decode(results[idx], skip_special_tokens=True)[len(query):])
+    question_contents = dict()
+    for idx, sample_output in enumerate(sample_outputs):
+        question_content = clean_enter(tokenizer.decode(sample_output, skip_special_tokens=True)[len(query):])
 
-    return TextGenerationOutput(output_1=text[0], output_2=text[1], output_3=text[2])
+        question_contents[idx] = question_content
+
+    return TextGenerationOutput(output_1=question_contents[0], output_2=question_contents[1], output_3=question_contents[2])
