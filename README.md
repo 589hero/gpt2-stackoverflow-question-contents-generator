@@ -11,3 +11,7 @@
 # How to build
 1. docker build -t "Your own docker image name" .
 2. docker run -it -p 8051:8051 "Your own docker image name":latest
+
+# Reference
+- https://github.com/dleunji/resume
+- https://github.com/ainize-team/tabtab
