@@ -3,7 +3,6 @@
 * Fine-tuning data
   * <a href="https://www.kaggle.com/imoore/60k-stack-overflow-questions-with-quality-rate">Kaggle</a> 
   * Use only Y="HQ(High Quality)" data and a length of sentences less than 1000.
-  * train 
 
 * Model
   * GPT2-medium
