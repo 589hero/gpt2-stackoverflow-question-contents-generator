@@ -15,8 +15,8 @@ class TextGenerationInput(BaseModel):
     question_title: str = Field(
         ...,
         title="Question Title",
-        description="The Question title used to generate question body.",
-        max_length=30,
+        description="The question title used to generate question body.",
+        max_length=100,
     )
     length: int = Field(
         100,
@@ -33,16 +33,19 @@ class TextGenerationOutput(BaseModel):
     output_3: str
 
 
-def clean_enter(text):
+def process_text(text):
     text = re.sub('\n{2,}', '\n', text)
+    text = text.strip()
 
     return text
 
 
 def generate_question_contents(input: TextGenerationInput) -> TextGenerationOutput:
-    """Generate question body based on a given question title."""
-    query = f'Title: {input.question_title}, Body: ' # question_title
-    input_ids = tokenizer.encode(query)
+    """Generate question contents based on a given question title."""
+    query = f'Title: {input.question_title}, Body: '  # question_title
+    input_ids = tokenizer.encode(query, return_tensors='pt')
+    input_ids = input_ids.to(device)
+
     min_length = len(input_ids.tolist()[0])
     max_length = input.length + min_length
 
@@ -59,7 +62,7 @@ def generate_question_contents(input: TextGenerationInput) -> TextGenerationOutp
 
     question_contents = dict()
     for idx, sample_output in enumerate(sample_outputs):
-        question_content = clean_enter(tokenizer.decode(sample_output, skip_special_tokens=True)[len(query):])
+        question_content = process_text(tokenizer.decode(sample_output, skip_special_tokens=True)[len(query):])
 
         question_contents[idx] = question_content
 
