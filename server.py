@@ -55,7 +55,6 @@ def generate_question_contents(input: TextGenerationInput) -> TextGenerationOutp
                                     min_length=min_length,
                                     max_length=max_length,
                                     no_repeat_ngram_size=2,
-                                    num_beams=5,
                                     top_k=40,
                                     top_p=0.95,
                                     num_return_sequences=3)
