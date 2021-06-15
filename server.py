@@ -15,7 +15,7 @@ class TextGenerationInput(BaseModel):
     question_title: str = Field(
         ...,
         title="Question Title",
-        description="The question title used to generate question body.",
+        description="The question title used to generate question contents.",
         max_length=100,
     )
     length: int = Field(
