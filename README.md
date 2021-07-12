@@ -6,6 +6,7 @@
   * <a href="https://www.kaggle.com/imoore/60k-stack-overflow-questions-with-quality-rate">Data</a> 
   * Use only Y="HQ(High Quality)" data and a length of sentences less than 1000.
   * <a href="https://drive.google.com/file/d/12NKzoniQ9qS9roRSOOcQaqIYoyyJmOTO/view?usp=sharing">Code</a> 
+  * <a href="https://huggingface.co/DHBaek/gpt2-stackoverflow-question-contents-generator">Model on Huggingface Model Hub</a>
 
 * Model
   * GPT2-medium
